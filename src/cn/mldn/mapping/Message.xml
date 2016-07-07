@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 设置命名空间，可以与不同表的同类型操作进行区分，使用时以“空间名称.id”的方式调用 -->
+<mapper namespace="cn.mldn.mapping.MessageNS">
+	<!-- 这个配置只在MyBatis查询的时候使用，对于更新操作无用 -->
+	<resultMap type="Message" id="MessageResultMap">
+		<result property="mid" column="mid"/>
+		<result property="title" column="title"/>
+		<result property="pubdate" column="pubdate"/>
+		<result property="content" column="content"/>
+	</resultMap>
+	<insert id="doCreate" parameterType="Message">
+		INSERT INTO message(title,pubdate,content) VALUES (#{title},#{pubdate},#{content}) ;
+	</insert> 
+	<select id="findAllSplit" parameterType="java.util.Map" resultMap="MessageResultMap">
+		SELECT mid,title,pubdate,content FROM message
+		<where>
+			<if test="keyWord != null">
+				${column} LIKE #{keyWord}
+			</if>
+		</where>
+		ORDER BY pubdate DESC 
+		LIMIT #{start} , #{lineSize} 
+	</select>
+</mapper>
